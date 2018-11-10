@@ -1,0 +1,5 @@
+-libraryjars F:\Win.Prg\Java\WTK2.5.2_01\lib\wma20.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\jsr75.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\jsr082.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\satsa-apdu.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\satsa-jcrmi.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\satsa-pki.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\satsa-crypto.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\mmapi.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\midpapi20.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\wma11.jar;F:\Win.Prg\Java\WTK2.5.2_01\lib\cldcapi11.jar
+-injars F:\Work\WTK\DozorCity\bin\DozorCity.jar
+-outjar E:\TEMP\DozorCity.jar
+-keep public class * extends javax.microedition.midlet.MIDlet 
+-dontusemixedcaseclassnames
