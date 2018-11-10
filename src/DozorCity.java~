@@ -6,8 +6,6 @@ import javax.microedition.midlet.*;
 
 public class DozorCity extends MIDlet implements CommandListener {
 	
-	// TODO: запуск http-запроса в отдельном потоке
-	
 	static final Command UPDATE_CMD = new Command("Update", Command.ITEM, 1);
     static final Command EXIT_CMD = new Command("Exit", Command.EXIT, 1);
 
@@ -18,6 +16,7 @@ public class DozorCity extends MIDlet implements CommandListener {
     String[] busStops;
     ChoiceGroup tablo;
     Font fnt = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+    boolean flagDataReady = false;
 
   
   public DozorCity() {
@@ -83,20 +82,14 @@ public class DozorCity extends MIDlet implements CommandListener {
   void updateTransportTablo() {
   	  int idx = stopCg.getSelectedIndex();
   	  
-  	  //String str = getJSONfromURL("http://paralitix.in.ua");
-  	  //Thread httpThread = new Thread(new HttpTask());
-  	  //httpThread.start();
+  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
+  	  httpThread.start();
   	  
-  	  Thread t = new Thread()
-  	  {
-  	  	  public void run()
-  	  	  { 
-  	  	  	  String str = getJSONfromURL("http://paralitix.in.ua");
-  	  	  	  System.out.println("Str: " + str);
-  	  	  }
-  	  };
-  	  t.start();
-  	  
+  	  try {
+  	  	  Thread.sleep(500);
+  	  } catch (Exception ex) {
+  	  	  ex.printStackTrace();
+  	  }
   	  
   	  
   	  if (idx == 0) {
@@ -168,37 +161,26 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  return "++++++++++++";
   }
   
+  public void callback(String value) {
+  	  flagDataReady = true;
+  	  System.out.println("Returned from thread: " + value);
+  }
+  
   
   // C L A S S
   public class HttpTask implements Runnable {
+  	  
+  	  DozorCity dc;
+  	  String url;
+  	  
+  	  public HttpTask(DozorCity obj, String url) {
+  	  	  this.dc  = obj;
+  	  	  this.url = url;
+  	  }
+  	  
   	  public void run() {
-  	  	  try {
-  	  	  	  HttpConnection conn = (HttpConnection)Connector.open("http://paralitix.in.ua");
-  	  	  	  conn.setRequestMethod(HttpConnection.GET);
-  	  	  	  conn.setRequestProperty("User-Agent", "Profile/MIDP-1.0 Confirguration/CLDC-1.0");
-  	  	  
-  	  	  	  int respCode = conn.getResponseCode();
-  	  	  
-  	  	  	  System.out.println("respCode: " + respCode);
-  	  	  	  
-  	  	  	  StringBuffer buf = new StringBuffer();
-  	  	  
-  	  	  	  if (respCode == conn.HTTP_OK) {
-  	  	  	  	  InputStream input = conn.openInputStream();
-  	  	  	  	  int chr;
-  	  	  	  	  while((chr = input.read()) != -1) {
-  	  	  	  	  	  buf.append((char) chr);
-  	  	  	  	  }
-  	  	  	  }
-  	  	  
-  	  	  	  System.out.println(buf.toString());
-  	  	  	  
-  	  	  } catch (OutOfMemoryError mem) {
-  	  	  	  mem.printStackTrace();
-  	  	  } catch (Exception ex) {
-  	  	  	  ex.printStackTrace();
-  	  	  } finally {
-  	  	  }
+  	  	  String str = getJSONfromURL(url);
+  	  	  dc.callback(str);
   	  }
   }
   

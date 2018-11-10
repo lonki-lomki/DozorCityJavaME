@@ -4,6 +4,8 @@ import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.*;
 
+import org.json.me.*;
+
 public class DozorCity extends MIDlet implements CommandListener {
 	
 	static final Command UPDATE_CMD = new Command("Update", Command.ITEM, 1);
@@ -82,8 +84,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   void updateTransportTablo() {
   	  int idx = stopCg.getSelectedIndex();
   	  
-  	  //String str = getJSONfromURL("http://paralitix.in.ua");
-  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua"));
+  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
   	  httpThread.start();
   	  
   	  try {
@@ -128,7 +129,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  HttpConnection conn = null;
       InputStream input = null;
   	  String method = HttpConnection.GET;
-  	  StringBuffer buf;
+  	  StringBuffer buf = new StringBuffer();
   	  
   	  try {
   	  	  conn = (HttpConnection)Connector.open(url);
@@ -139,7 +140,6 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  int respCode = conn.getResponseCode();
   	  	  
   	  	  System.out.println("respCode: " + respCode);
-  	  	  buf = new StringBuffer();
   	  	  
   	  	  if (respCode == conn.HTTP_OK) {
   	  	  	  input = conn.openInputStream();
@@ -149,22 +149,47 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  }
   	  	  }
   	  	  
-          System.out.println(buf.toString());
+          //System.out.println(buf.toString());
   	  	  
       } catch (OutOfMemoryError mem) {
       	  mem.printStackTrace();
       } catch (Exception ex) {
       	  ex.printStackTrace();
-      } finally {
       }
       
+      try {
+      	  if (input != null) {
+      	  	  input.close();
+      	  }
+      	  if (conn != null) {
+      	  	  conn.close();
+      	  }
+      } catch (Exception ex) {
+      	  ex.printStackTrace();
+      }
       
-  	  return "++++++++++++";
+      if (buf.length() > 0) {
+      	  return buf.toString();
+      }
+      
+  	  return null;
   }
   
   public void callback(String value) {
   	  flagDataReady = true;
   	  System.out.println("Returned from thread: " + value);
+  	  try {
+  	  	  JSONObject jo = new JSONObject(value);
+  	  	  System.out.println("jo:"+jo.toString());
+  	  	  JSONObject data = (JSONObject) jo.opt("data");
+  	  	  System.out.println("data:"+data.toString());
+  	  	  JSONArray a1 = (JSONArray) data.opt("a1");
+  	  	  System.out.println("a1:"+a1.toString());
+  	  	  JSONArray a2 = (JSONArray) data.opt("a2");
+  	  	  System.out.println("a2:"+a2.toString());
+  	  } catch (JSONException ex) {
+  	  	  ex.printStackTrace();
+  	  }
   }
   
   
@@ -174,8 +199,8 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  DozorCity dc;
   	  String url;
   	  
-  	  public HttpTask(DozorCity value, String url) {
-  	  	  this.dc  = value;
+  	  public HttpTask(DozorCity obj, String url) {
+  	  	  this.dc  = obj;
   	  	  this.url = url;
   	  }
   	  
