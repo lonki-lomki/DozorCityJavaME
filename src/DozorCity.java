@@ -4,7 +4,7 @@ import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.*;
 
-import org.json.me.*;
+//import org.json.me.*;
 
 public class DozorCity extends MIDlet implements CommandListener {
 	
@@ -178,6 +178,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   public void callback(String value) {
   	  flagDataReady = true;
   	  System.out.println("Returned from thread: " + value);
+  	  /*
   	  try {
   	  	  JSONObject jo = new JSONObject(value);
   	  	  System.out.println("jo:"+jo.toString());
@@ -190,6 +191,34 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  } catch (JSONException ex) {
   	  	  ex.printStackTrace();
   	  }
+  	  */
+  	  int idx_a1 = value.indexOf("\"a1\"");
+  	  int idx_a2 = value.indexOf("\"a2\"");
+  	  int idx_a3 = value.indexOf("\"a3\"");
+  	  System.out.println("a1:" + idx_a1 + " a2:" + idx_a2 + " a3:" + idx_a3);
+  	  /*
+  	  String str_a1 = value.substring(idx_a1+6, idx_a2-2);
+  	  String str_a2 = value.substring(idx_a2+6, idx_a3-2);
+  	  System.out.println("str_a1:" + str_a1);
+  	  System.out.println("str_a2:" + str_a2);
+  	  */
+  	  int a1_begin = value.indexOf('[', idx_a1);
+  	  int a1_end = value.indexOf(']', a1_begin);
+  	  int a2_begin = value.indexOf('[', idx_a2);
+  	  int a2_end = value.indexOf(']', a2_begin);
+  	  int a3_begin = value.indexOf('[', idx_a3);
+  	  int a3_end = value.indexOf(']', a3_begin);
+  	  System.out.println("a1:" + value.substring(a1_begin+1, a1_end+1));
+  	  System.out.println("a2:" + value.substring(a2_begin+1, a2_end+1));
+  	  System.out.println("a3:" + value.substring(a3_begin+1, a3_end+1));
+  	  
+  	  parseTransport("B", value.substring(a1_begin+1, a1_end+1));	// Parse bus
+  	  parseTransport("Tb", value.substring(a1_begin+1, a1_end+1));	// Parse trolleybus
+  	  parseTransport("Tr", value.substring(a1_begin+1, a1_end+1));  // Parse trams
+  }
+  
+  void parseTransport(String TrType, String info) {
+  	  // TODO !!!!!!!!!!!!!!!!!!!!!
   }
   
   

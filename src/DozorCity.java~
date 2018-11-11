@@ -4,6 +4,8 @@ import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.*;
 
+//import org.json.me.*;
+
 public class DozorCity extends MIDlet implements CommandListener {
 	
 	static final Command UPDATE_CMD = new Command("Update", Command.ITEM, 1);
@@ -127,7 +129,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  HttpConnection conn = null;
       InputStream input = null;
   	  String method = HttpConnection.GET;
-  	  StringBuffer buf;
+  	  StringBuffer buf = new StringBuffer();
   	  
   	  try {
   	  	  conn = (HttpConnection)Connector.open(url);
@@ -138,7 +140,6 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  int respCode = conn.getResponseCode();
   	  	  
   	  	  System.out.println("respCode: " + respCode);
-  	  	  buf = new StringBuffer();
   	  	  
   	  	  if (respCode == conn.HTTP_OK) {
   	  	  	  input = conn.openInputStream();
@@ -148,22 +149,57 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  }
   	  	  }
   	  	  
-          System.out.println(buf.toString());
+          //System.out.println(buf.toString());
   	  	  
       } catch (OutOfMemoryError mem) {
       	  mem.printStackTrace();
       } catch (Exception ex) {
       	  ex.printStackTrace();
-      } finally {
       }
       
+      try {
+      	  if (input != null) {
+      	  	  input.close();
+      	  }
+      	  if (conn != null) {
+      	  	  conn.close();
+      	  }
+      } catch (Exception ex) {
+      	  ex.printStackTrace();
+      }
       
-  	  return "++++++++++++";
+      if (buf.length() > 0) {
+      	  return buf.toString();
+      }
+      
+  	  return null;
   }
   
   public void callback(String value) {
   	  flagDataReady = true;
   	  System.out.println("Returned from thread: " + value);
+  	  /*
+  	  try {
+  	  	  JSONObject jo = new JSONObject(value);
+  	  	  System.out.println("jo:"+jo.toString());
+  	  	  JSONObject data = (JSONObject) jo.opt("data");
+  	  	  System.out.println("data:"+data.toString());
+  	  	  JSONArray a1 = (JSONArray) data.opt("a1");
+  	  	  System.out.println("a1:"+a1.toString());
+  	  	  JSONArray a2 = (JSONArray) data.opt("a2");
+  	  	  System.out.println("a2:"+a2.toString());
+  	  } catch (JSONException ex) {
+  	  	  ex.printStackTrace();
+  	  }
+  	  */
+  	  int idx_a1 = value.indexOf("\"a1\"");
+  	  int idx_a2 = value.indexOf("\"a2\"");
+  	  int idx_a3 = value.indexOf("\"a3\"");
+  	  System.out.println("a1:" + idx_a1 + " a2:" + idx_a2 + " a3:" + idx_a3);
+  	  String str_a1 = value.substring(idx_a1+6, idx_a2-2);
+  	  String str_a2 = value.substring(idx_a2+6, idx_a3-2);
+  	  System.out.println("str_a1:" + str_a1);
+  	  System.out.println("str_a2:" + str_a2);
   }
   
   
