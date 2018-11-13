@@ -208,17 +208,37 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  int a2_end = value.indexOf(']', a2_begin);
   	  int a3_begin = value.indexOf('[', idx_a3);
   	  int a3_end = value.indexOf(']', a3_begin);
-  	  System.out.println("a1:" + value.substring(a1_begin+1, a1_end+1));
-  	  System.out.println("a2:" + value.substring(a2_begin+1, a2_end+1));
-  	  System.out.println("a3:" + value.substring(a3_begin+1, a3_end+1));
+  	  System.out.println("a1:" + value.substring(a1_begin+1, a1_end));
+  	  System.out.println("a2:" + value.substring(a2_begin+1, a2_end));
+  	  System.out.println("a3:" + value.substring(a3_begin+1, a3_end));
   	  
-  	  parseTransport("B", value.substring(a1_begin+1, a1_end+1));	// Parse bus
-  	  parseTransport("Tb", value.substring(a1_begin+1, a1_end+1));	// Parse trolleybus
-  	  parseTransport("Tr", value.substring(a1_begin+1, a1_end+1));  // Parse trams
+  	  parseTransport("B", value.substring(a1_begin+1, a1_end));		// Parse bus (a1 array)
+  	  parseTransport("Tb", value.substring(a2_begin+1, a2_end));	// Parse trolleybus (a2 array)
+  	  parseTransport("Tr", value.substring(a3_begin+1, a3_end));	// Parse trams (a3 array)
   }
   
   void parseTransport(String TrType, String info) {
-  	  // TODO !!!!!!!!!!!!!!!!!!!!!
+  	  if (info.length() <= 3) {
+  	  	  return;
+  	  }
+  	  String tmp = new String(info);
+  	  // Parse loop
+  	  while(true) {
+  	  	  if (tmp.length() <= 3) {
+  	  	  	  break;
+  	  	  }
+  	  	  int idx = tmp.indexOf('}');
+  	  	  if (idx <= 3) {
+  	  	  	  break;
+  	  	  }
+  	  	  String obj = tmp.substring(1, idx);
+  	  	  // TODO: parse obj
+  	  	  idx = tmp.indexOf('{', 1);
+  	  	  if (idx < 0) {
+  	  	  	  break;
+  	  	  }
+  	  	  tmp = new String(tmp.substring(idx));
+  	  }
   }
   
   
@@ -237,6 +257,28 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  String str = getJSONfromURL(url);
   	  	  dc.callback(str);
   	  }
+  }
+  
+  public class Transport {
+  	  public int rId;
+  	  public int dId;
+  	  public int t;
+  	  
+  	  // Construct by components 
+  	  public Transport(int rId, int dId, int t) {
+  	  	  this.rId = rId;
+  	  	  this.dId = dId;
+  	  	  this.t = t;
+  	  }
+  	  
+  	  // Construct by JSON object
+  	  public Transport(String obj) {
+  	  	  // >>> next object:"rId":1364,"dId":7742,"t":9
+  	  	  String[] arr = obj.split(",");
+  	  	  // TODO: ........
+  	  }
+  	  
+  	  
   }
   
   
