@@ -273,25 +273,12 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  this.t = t;
   	  }
   	  
-  	  // TODO: without split:
-  	  /*
-  	  import java.util.StringTokenizer;
-  	  ...
-  	  String test = "abc.def.123";
-
-		StringTokenizer token = new StringTokenizer(test, ".");
-
-		while (token.hasMoreTokens()) {
-			System.out.println(token.nextToken());
-		}
-		*/
-  	  
   	  // Construct by JSON object
   	  public Transport(String obj) {
   	  	  // >>> next object:"rId":1364,"dId":7742,"t":9
-  	  	  String[] arr = obj.split(",");
+  	  	  String[] arr = split(obj, ",");
   	  	  for(int i=0; i<arr.length; i++) {
-  	  	  	  String[] arr2 = arr[i].split(";");
+  	  	  	  String[] arr2 = split(arr[i], ";");
   	  	  	  if ("\"rId\"".equals(arr2[0])) {
   	  	  	  	  this.rId = Integer.parseInt(arr2[1]); 
   	  	  	  }
@@ -302,6 +289,31 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  	  this.t = Integer.parseInt(arr2[1]); 
   	  	  	  }
   	  	  }
+  	  }
+  	  
+  	  /**
+  	   * Split string to array by delimiter 
+  	   */
+  	  private String[] split(String str, char delim) {
+  	  	  /*
+  	  	  StringTokenizer token = new StringTokenizer(str, delim);
+  	  	  String[] result = new String[token.countTokens()];
+  	  	  int i = 0;
+  	  	  while (token.hasMoreTokens()) {
+  	  	  	  result[i++] = token.nextToken(); 
+  	  	  }
+  	  	  return result;
+  	  	  */
+  	  	  StringBuilder sb = new StringBuilder();
+  	  	  Vector v = new Vector();
+  	  	  for(int i=0; i<str.length(); i++) {
+  	  	  	  if (str.charAt(i) == delim) {
+  	  	  	  	  // Split. Add to Vector
+  	  	  	  } else {
+  	  	  	  	  // Accumulate
+  	  	  	  }
+  	  	  }
+  	  	  
   	  }
   	  
   	  public String toString() {

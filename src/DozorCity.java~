@@ -232,7 +232,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  break;
   	  	  }
   	  	  String obj = tmp.substring(1, idx);
-  	  	  // TODO: parse obj
+  	  	  Transport tr = new Transport(obj);
+  	  	  System.out.println("obj:" + obj);
+  	  	  System.out.println("Transport:" + tr.toString());
   	  	  idx = tmp.indexOf('{', 1);
   	  	  if (idx < 0) {
   	  	  	  break;
@@ -271,11 +273,39 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  this.t = t;
   	  }
   	  
+  	  // TODO: without split:
+  	  /*
+  	  import java.util.StringTokenizer;
+  	  ...
+  	  String test = "abc.def.123";
+
+		StringTokenizer token = new StringTokenizer(test, ".");
+
+		while (token.hasMoreTokens()) {
+			System.out.println(token.nextToken());
+		}
+		*/
+  	  
   	  // Construct by JSON object
   	  public Transport(String obj) {
   	  	  // >>> next object:"rId":1364,"dId":7742,"t":9
   	  	  String[] arr = obj.split(",");
-  	  	  // TODO: ........
+  	  	  for(int i=0; i<arr.length; i++) {
+  	  	  	  String[] arr2 = arr[i].split(";");
+  	  	  	  if ("\"rId\"".equals(arr2[0])) {
+  	  	  	  	  this.rId = Integer.parseInt(arr2[1]); 
+  	  	  	  }
+  	  	  	  if ("\"dId\"".equals(arr2[0])) {
+  	  	  	  	  this.dId = Integer.parseInt(arr2[1]); 
+  	  	  	  }
+  	  	  	  if ("\"t\"".equals(arr2[0])) {
+  	  	  	  	  this.t = Integer.parseInt(arr2[1]); 
+  	  	  	  }
+  	  	  }
+  	  }
+  	  
+  	  public String toString() {
+  	  	  return "rId:" + this.rId + " dId:" + this.dId + " t:" + this.t;
   	  }
   	  
   	  
