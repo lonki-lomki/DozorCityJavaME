@@ -4,7 +4,6 @@ import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.*;
 
-//import org.json.me.*;
 
 public class DozorCity extends MIDlet implements CommandListener {
 	
@@ -17,7 +16,7 @@ public class DozorCity extends MIDlet implements CommandListener {
     ChoiceGroup stopCg;
     String[] busStops;
     ChoiceGroup tablo;
-    Font fnt = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+    Font fnt = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_BOLD, Font.SIZE_MEDIUM);
     boolean flagDataReady = false;
 
   
@@ -84,6 +83,11 @@ public class DozorCity extends MIDlet implements CommandListener {
   void updateTransportTablo() {
   	  int idx = stopCg.getSelectedIndex();
   	  
+  /*	  
+  	  if (idx == 0) {
+  	  }
+  */
+  	  
   	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
   	  httpThread.start();
   	  
@@ -93,36 +97,6 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  ex.printStackTrace();
   	  }
   	  
-  	  
-  	  if (idx == 0) {
-  	  	  tablo.deleteAll();
-  	  	  tablo.append("A7       3", null);
-  	  	  tablo.append("T4       4", null);
-  	  	  tablo.append("A42      9", null);
-  	  	  tablo.append("A37     10", null);
-  	  	  tablo.append("T9      11", null);
-  	  	  tablo.setFont(0, fnt);
-  	  	  tablo.setFont(1, fnt);
-  	  	  tablo.setFont(2, fnt);
-  	  	  tablo.setFont(3, fnt);
-  	  	  tablo.setFont(4, fnt);
-  	  }
-  	  if (idx == 1) {
-  	  	  tablo.deleteAll();
-  	  	  tablo.append("A7       1", null);
-  	  	  tablo.append("T4       2", null);
-  	  	  tablo.append("A42      3", null);
-  	  	  tablo.setFont(0, fnt);
-  	  	  tablo.setFont(1, fnt);
-  	  	  tablo.setFont(2, fnt);
-  	  }
-  	  if (idx == 2) {
-  	  	  tablo.deleteAll();
-  	  	  tablo.append("A7       5", null);
-  	  	  tablo.append("A42      7", null);
-  	  	  tablo.setFont(0, fnt);
-  	  	  tablo.setFont(1, fnt);
-  	  }
   }
   
   String getJSONfromURL(String url) {
@@ -148,9 +122,6 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  	  buf.append((char) chr);
   	  	  	  }
   	  	  }
-  	  	  
-          //System.out.println(buf.toString());
-  	  	  
       } catch (OutOfMemoryError mem) {
       	  mem.printStackTrace();
       } catch (Exception ex) {
@@ -175,33 +146,18 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  return null;
   }
   
+  /**
+   * Callback method to display received information
+   */
   public void callback(String value) {
   	  flagDataReady = true;
   	  System.out.println("Returned from thread: " + value);
-  	  /*
-  	  try {
-  	  	  JSONObject jo = new JSONObject(value);
-  	  	  System.out.println("jo:"+jo.toString());
-  	  	  JSONObject data = (JSONObject) jo.opt("data");
-  	  	  System.out.println("data:"+data.toString());
-  	  	  JSONArray a1 = (JSONArray) data.opt("a1");
-  	  	  System.out.println("a1:"+a1.toString());
-  	  	  JSONArray a2 = (JSONArray) data.opt("a2");
-  	  	  System.out.println("a2:"+a2.toString());
-  	  } catch (JSONException ex) {
-  	  	  ex.printStackTrace();
-  	  }
-  	  */
+  	  
   	  int idx_a1 = value.indexOf("\"a1\"");
   	  int idx_a2 = value.indexOf("\"a2\"");
   	  int idx_a3 = value.indexOf("\"a3\"");
   	  System.out.println("a1:" + idx_a1 + " a2:" + idx_a2 + " a3:" + idx_a3);
-  	  /*
-  	  String str_a1 = value.substring(idx_a1+6, idx_a2-2);
-  	  String str_a2 = value.substring(idx_a2+6, idx_a3-2);
-  	  System.out.println("str_a1:" + str_a1);
-  	  System.out.println("str_a2:" + str_a2);
-  	  */
+
   	  int a1_begin = value.indexOf('[', idx_a1);
   	  int a1_end = value.indexOf(']', a1_begin);
   	  int a2_begin = value.indexOf('[', idx_a2);
@@ -211,17 +167,32 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  System.out.println("a1:" + value.substring(a1_begin+1, a1_end));
   	  System.out.println("a2:" + value.substring(a2_begin+1, a2_end));
   	  System.out.println("a3:" + value.substring(a3_begin+1, a3_end));
+
+  	  // Clear information from display
+  	  tablo.deleteAll();
   	  
-  	  parseTransport("B", value.substring(a1_begin+1, a1_end));		// Parse bus (a1 array)
-  	  parseTransport("Tb", value.substring(a2_begin+1, a2_end));	// Parse trolleybus (a2 array)
-  	  parseTransport("Tr", value.substring(a3_begin+1, a3_end));	// Parse trams (a3 array)
+  	  parseTransport("A", value.substring(a1_begin+1, a1_end));		// Parse bus (a1 array)
+  	  parseTransport("T", value.substring(a2_begin+1, a2_end));	    // Parse trolleybus (a2 array)
+  	  parseTransport("Tv", value.substring(a3_begin+1, a3_end));	// Parse trams (a3 array)
+  	  
+   	  // Set font for each row
+  	  for (int i=0; i<tablo.size(); i++) {
+	  	  tablo.setFont(i, this.fnt);
+  	  }
+
   }
   
-  void parseTransport(String TrType, String info) {
+  /**
+   * Parse data and send result to screen (ChoiceGroup tablo)
+   * @param TrType transport type (Bus, Trolleybus, Tram)
+   * @param info input JSON string
+   */
+  void parseTransport(String trType, String info) {
   	  if (info.length() <= 3) {
   	  	  return;
   	  }
   	  String tmp = new String(info);
+  	  int cnt = 0;
   	  // Parse loop
   	  while(true) {
   	  	  if (tmp.length() <= 3) {
@@ -233,14 +204,30 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  }
   	  	  String obj = tmp.substring(1, idx);
   	  	  Transport tr = new Transport(obj);
-  	  	  System.out.println("obj:" + obj);
-  	  	  System.out.println("Transport:" + tr.toString());
+  	  	  //System.out.println("obj:" + obj);
+  	  	  //System.out.println("Transport:" + tr.toString());
+  	  	  
+  	  	  // Align route and time
+  	  	  String route = trType + tr.rId;
+  	  	  String time = "" + tr.t;
+  	  	  StringBuffer sb = new StringBuffer(route);
+  	  	  for (int i=0; i<(10-route.length()-time.length()); i++) {
+  	  	  	  sb.append(" ");
+  	  	  }
+  	  	  sb.append(time);
+  	  	  
+  	  	  // Add values to tablo
+  	  	  tablo.append(sb.toString(), null);
+  	  	  System.out.println("To tablo: " + sb.toString());
+  	  	  cnt++;
+  	  	  
   	  	  idx = tmp.indexOf('{', 1);
   	  	  if (idx < 0) {
   	  	  	  break;
   	  	  }
   	  	  tmp = new String(tmp.substring(idx));
   	  }
+
   }
   
   
@@ -276,9 +263,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  // Construct by JSON object
   	  public Transport(String obj) {
   	  	  // >>> next object:"rId":1364,"dId":7742,"t":9
-  	  	  String[] arr = split(obj, ",");
+  	  	  String[] arr = split(obj, ',');
   	  	  for(int i=0; i<arr.length; i++) {
-  	  	  	  String[] arr2 = split(arr[i], ";");
+  	  	  	  String[] arr2 = split(arr[i], ':');
   	  	  	  if ("\"rId\"".equals(arr2[0])) {
   	  	  	  	  this.rId = Integer.parseInt(arr2[1]); 
   	  	  	  }
@@ -295,33 +282,35 @@ public class DozorCity extends MIDlet implements CommandListener {
   	   * Split string to array by delimiter 
   	   */
   	  private String[] split(String str, char delim) {
-  	  	  /*
-  	  	  StringTokenizer token = new StringTokenizer(str, delim);
-  	  	  String[] result = new String[token.countTokens()];
-  	  	  int i = 0;
-  	  	  while (token.hasMoreTokens()) {
-  	  	  	  result[i++] = token.nextToken(); 
-  	  	  }
-  	  	  return result;
-  	  	  */
-  	  	  StringBuilder sb = new StringBuilder();
-  	  	  Vector v = new Vector();
-  	  	  for(int i=0; i<str.length(); i++) {
+  	  	  StringBuffer sb = new StringBuffer();
+  	  	  java.util.Vector v = new java.util.Vector();
+  	  	  for (int i=0; i<str.length(); i++) {
   	  	  	  if (str.charAt(i) == delim) {
   	  	  	  	  // Split. Add to Vector
+  	  	  	  	  v.addElement(sb.toString());
+  	  	  	  	  // Empty string
+  	  	  	  	  sb.setLength(0);
   	  	  	  } else {
   	  	  	  	  // Accumulate
+  	  	  	  	  sb.append(str.charAt(i));
   	  	  	  }
   	  	  }
+  	  	  // Add rest of string, if...
+  	  	  if (sb.length() > 0) {
+  	  	  	  v.addElement(sb.toString());
+  	  	  }
   	  	  
+  	  	  String[] result = new String[v.size()];
+  	  	  for (int i=0; i<v.size(); i++) {
+  	  	  	  result[i] = (String) v.elementAt(i);
+  	  	  }
+  	  	  return result;
   	  }
   	  
   	  public String toString() {
   	  	  return "rId:" + this.rId + " dId:" + this.dId + " t:" + this.t;
   	  }
   	  
-  	  
   }
-  
   
 }
