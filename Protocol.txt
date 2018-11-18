@@ -1,3 +1,16 @@
+Request cookies	
+gts.web.city	chernigiv
+gts.web.uuid	75DFEFB4-3749-4F85-B329-6213EC13A5FC
+JSESSIONID	9DA2ADA77D778C5F633E834142217651
+
+setRequestProperty("Cookie", cookie);
+
+JSESSIONID=3040EF25F88E6696B6E4E985FE1B954C; gts.web.uuid=F215818B-6991-43C0-BC1D-BAA14471366B; gts.web.city=chernigiv; gts.web.google_map.center.lon=51.492767; gts.web.google_map.center.lat=31.280823; gts.web.google_map.zoom=13
+
+
+
+Получить список всех маршрутов:
+ - запрос по адресу: https://city.dozor.tech/data?t=1
 ...
 
 Выбор остановки:
