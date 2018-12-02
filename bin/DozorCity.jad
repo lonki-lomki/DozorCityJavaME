@@ -1,8 +1,8 @@
 MIDlet-1: DozorCity, DozorCity.png, DozorCity
-MIDlet-Jar-Size: 15464
+MIDlet-Jar-Size: 6118
 MIDlet-Jar-URL: DozorCity.jar
 MIDlet-Name: DozorCity
-MIDlet-Permissions: javax.microedition.io.Connector.http,javax.microedition.io.Connector.https
+MIDlet-Permissions: javax.microedition.io.Connector.http,javax.microedition.io.Connector.https,javax.microedition.io.Connector.ssl
 MIDlet-Vendor: DKartashov
 MIDlet-Version: 1.0
 MicroEdition-Configuration: CLDC-1.1

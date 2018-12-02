@@ -1,7 +1,7 @@
 MIDlet-1: DozorCity, DozorCity.png, DozorCity
 MIDlet-Name: DozorCity
 MIDlet-Permissions: javax.microedition.io.Connector.http,javax.microed
- ition.io.Connector.https
+ ition.io.Connector.https,javax.microedition.io.Connector.ssl
 MIDlet-Vendor: DKartashov
 MIDlet-Version: 1.0
 MicroEdition-Configuration: CLDC-1.1

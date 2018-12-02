@@ -3,13 +3,13 @@ import java.io.InputStream;
 import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.*;
+import javax.microedition.pki.*;
 
 
 public class DozorCity extends MIDlet implements CommandListener {
 	
 	static final Command UPDATE_CMD = new Command("Update", Command.ITEM, 1);
     static final Command EXIT_CMD = new Command("Exit", Command.EXIT, 1);
-
 	
 	private Form mMainForm;
 	Display display;
@@ -26,6 +26,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  mMainForm.addCommand(UPDATE_CMD);
   	  mMainForm.addCommand(EXIT_CMD);
   	  mMainForm.setCommandListener(this);
+  	  
+  	  // Read routes info from file 'routes.txt'
+  	  // TODO:
   	  
   	  stopCg = new ChoiceGroup("Choose a bus stop", Choice.POPUP);
   	  mMainForm.append(stopCg);
@@ -88,7 +91,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  }
   */
   	  
-  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
+//  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
+  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/cgi-bin/proxy.py?t=3&p=25681,27707,24795,25548,25997,24942,27476,25177,25285,26815,26416,25461,26708,26139,26102,26554,26513"));
+  	  
   	  httpThread.start();
   	  
   	  try {
@@ -102,13 +107,14 @@ public class DozorCity extends MIDlet implements CommandListener {
   String getJSONfromURL(String url) {
   	  HttpConnection conn = null;
       InputStream input = null;
-  	  String method = HttpConnection.GET;
   	  StringBuffer buf = new StringBuffer();
   	  
   	  try {
   	  	  conn = (HttpConnection)Connector.open(url);
-  	  	  conn.setRequestMethod(method);
-  	  	  conn.setRequestProperty("User-Agent", "Profile/MIDP-1.0 Confirguration/CLDC-1.0");
+  	  	  
+  	  	  conn.setRequestMethod(HttpConnection.GET);
+  	  	  conn.setRequestProperty("User-Agent", "Profile/MIDP-2.0 Confirguration/CLDC-1.1");
+  	  	  //conn.setRequestProperty("Cookie", cookie);
   	  	  //setConfig(conn);	// Set UserAgent, Content-Language
   	  	  
   	  	  int respCode = conn.getResponseCode();
@@ -140,6 +146,7 @@ public class DozorCity extends MIDlet implements CommandListener {
       }
       
       if (buf.length() > 0) {
+      	  System.out.println("Input length:" + buf.length());
       	  return buf.toString();
       }
       
@@ -175,10 +182,14 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  parseTransport("T", value.substring(a2_begin+1, a2_end));	    // Parse trolleybus (a2 array)
   	  parseTransport("Tv", value.substring(a3_begin+1, a3_end));	// Parse trams (a3 array)
   	  
+  	  // TODO: concat all lists and sort by time ASC
+  	  
+  	  //System.out.println("tablo.size(): " + tablo.size());
+  	  
    	  // Set font for each row
-  	  for (int i=0; i<tablo.size(); i++) {
-	  	  tablo.setFont(i, this.fnt);
-  	  }
+  	  //for (int i=0; i<tablo.size(); i++) {
+	  //	  tablo.setFont(i, this.fnt);
+  	  //}
 
   }
   
