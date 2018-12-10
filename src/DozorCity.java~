@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.Hashtable;
+import java.util.Enumeration;
 
 import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
@@ -19,7 +20,7 @@ public class DozorCity extends MIDlet implements CommandListener {
     ChoiceGroup tablo;
     Font fnt = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_BOLD, Font.SIZE_MEDIUM);
     boolean flagDataReady = false;
-    Hashtable routes = new Hashtable();
+    static Hashtable routes = new Hashtable();
 
   
   public DozorCity() {
@@ -32,7 +33,10 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  // Read routes info from file 'routes.txt'
   	  // TODO:
   	  readRoutesFromFile("/routes.txt");
-  	  System.out.println("Read from file routes.txt " + routes.size() + " records");
+  	  //System.out.println("Read from file routes.txt " + routes.size() + " records");
+  	  //for (Enumeration keys = routes.keys() ; keys.hasMoreElements() ;) {
+  	  //	  System.out.println("   key:" + keys.nextElement() + " value:" + routes.get((String)keys.nextElement()));
+  	  //}
   	  
   	  stopCg = new ChoiceGroup("Choose a bus stop", Choice.POPUP);
   	  mMainForm.append(stopCg);
@@ -256,6 +260,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  byte b[] = new byte[1];
   	  	  while(is.read(b) != -1) {
   	  	  	  if (b[0] == '\n') {
+  	  	  	  	  continue;
+  	  	  	  }
+  	  	  	  if (b[0] == '\r') {
   	  	  	  	  // Parse next line
   	  	  	  	  String str = sb.toString();
   	  	  	  	  int idx = str.indexOf('|');
@@ -263,6 +270,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  	  routes.put(str.substring(0, idx), str.substring(idx+1));
   	  	  	  	  // Empty string buffer
   	  	  	  	  sb.setLength(0);
+  	  	  	  	  continue;
   	  	  	  }
   	  	  	  sb.append(new String(b));
   	  	  }
@@ -274,7 +282,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   }
 
   
-  // C L A S S
+  // C L A S S  HttpTask *******************************************************
   public class HttpTask implements Runnable {
   	  
   	  DozorCity dc;
@@ -291,6 +299,8 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  }
   }
   
+  
+  // C L A S S  Transport ******************************************************
   public class Transport {
   	  public int rId;
   	  public int dId;
@@ -302,7 +312,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  this.rId = rId;
   	  	  this.dId = dId;
   	  	  this.t = t;
-  	  	  this.name = (String)routes.get(""+rId);
+  	  	  this.name = (String)DozorCity.routes.get(""+rId);
   	  }
   	  
   	  // Construct by JSON object
@@ -313,8 +323,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  String[] arr2 = split(arr[i], ':');
   	  	  	  if ("\"rId\"".equals(arr2[0])) {
   	  	  	  	  this.rId = Integer.parseInt(arr2[1]);
-  	  	  	  	  System.out.println(">>>> get route for ID:"+ arr2[1]);
-  	  	  	  	  this.name = (String)routes.get(arr2[1]);
+  	  	  	  	  this.name = (String)(DozorCity.routes.get(arr2[1]));
   	  	  	  	  if (this.name == null) {
   	  	  	  	  	  this.name = "";
   	  	  	  	  }
