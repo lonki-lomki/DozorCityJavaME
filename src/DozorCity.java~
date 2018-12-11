@@ -16,7 +16,8 @@ public class DozorCity extends MIDlet implements CommandListener {
 	private Form mMainForm;
 	Display display;
     ChoiceGroup stopCg;
-    String[] busStops;
+    String[] busStopNames;
+    String[] busStopUrls;
     ChoiceGroup tablo;
     Font fnt = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_BOLD, Font.SIZE_MEDIUM);
     boolean flagDataReady = false;
@@ -31,7 +32,6 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  mMainForm.setCommandListener(this);
   	  
   	  // Read routes info from file 'routes.txt'
-  	  // TODO:
   	  readRoutesFromFile("/routes.txt");
   	  //System.out.println("Read from file routes.txt " + routes.size() + " records");
   	  //for (Enumeration keys = routes.keys() ; keys.hasMoreElements() ;) {
@@ -41,16 +41,20 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  stopCg = new ChoiceGroup("Choose a bus stop", Choice.POPUP);
   	  mMainForm.append(stopCg);
   	  
-  	  busStops = new String[3];
-  	  busStops[0] = "One";
-  	  busStops[1] = "Two";
-  	  busStops[2] = "Three";
+  	  busStopNames = new String[3];
+  	  busStopUrls = new String[3];
+  	  busStopNames[0] = "MegaCenter";
+  	  busStopUrls[0] = "t=3&p=25681,27707,24795,25548,25997,24942,27476,25177,25285,26815,26416,25461,26708,26139,26102,26554,26513";
+  	  busStopNames[1] = "M.Nebaby";
+  	  busStopUrls[1] = "t=3&p=25683,24797,25550,25999,25179,25289,26817,26418,26710,26141,26104,26556,26515";
+  	  busStopNames[2] = "Geroyv Chornobylya";
+  	  busStopUrls[2] = "t=3&p=25684,24798,25551,27107,25180,25290,26856,26465,26419,26711,26142,26105,26557,26516"; 
   	  
-  	  for(int i = 0; i < busStops.length; i++) {
-  	  	  stopCg.append(busStops[i], null);
+  	  for(int i = 0; i < busStopNames.length; i++) {
+  	  	  stopCg.append(busStopNames[i], null);
   	  }
   	  
-  	  tablo = new ChoiceGroup(busStops[0]+": Bus Stop Tablo", Choice.EXCLUSIVE);
+  	  tablo = new ChoiceGroup(busStopNames[0]+": Bus Stop Tablo", Choice.EXCLUSIVE);
   	  tablo.setLayout(Item.LAYOUT_EXPAND);
   	  mMainForm.append(tablo);
   	  
@@ -60,8 +64,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  		  	  	  ChoiceGroup obj = (ChoiceGroup)item;
   	  		  	  	  if (obj == stopCg) {
   	  		  	  	  	  int idx = obj.getSelectedIndex();
-  	  		  	  	  	  String busStop = busStops[idx];
+  	  		  	  	  	  String busStop = busStopNames[idx];
   	  		  	  	  	  tablo.setLabel(busStop+": Bus Stop Tablo");
+  	  		  	  	  	  tablo.deleteAll();
   	  		  	  	  }
   	  		  	  }
   	  		  }
@@ -94,13 +99,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   void updateTransportTablo() {
   	  int idx = stopCg.getSelectedIndex();
   	  
-  /*	  
-  	  if (idx == 0) {
-  	  }
-  */
-  	  
 //  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
-  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/cgi-bin/proxy.py?t=3&p=25681,27707,24795,25548,25997,24942,27476,25177,25285,26815,26416,25461,26708,26139,26102,26554,26513"));
+//  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/cgi-bin/proxy.py?t=3&p=25681,27707,24795,25548,25997,24942,27476,25177,25285,26815,26416,25461,26708,26139,26102,26554,26513"));
+  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/cgi-bin/proxy.py?" + busStopUrls[idx]));
   	  
   	  httpThread.start();
   	  

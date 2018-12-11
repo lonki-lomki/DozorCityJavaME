@@ -41,15 +41,18 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  stopCg = new ChoiceGroup("Choose a bus stop", Choice.POPUP);
   	  mMainForm.append(stopCg);
   	  
-  	  busStopNames = new String[3];
-  	  busStopUrls = new String[3];
+  	  busStopNames = new String[4];
+  	  busStopUrls = new String[4];
   	  busStopNames[0] = "MegaCenter";
   	  busStopUrls[0] = "t=3&p=25681,27707,24795,25548,25997,24942,27476,25177,25285,26815,26416,25461,26708,26139,26102,26554,26513";
   	  busStopNames[1] = "M.Nebaby";
   	  busStopUrls[1] = "t=3&p=25683,24797,25550,25999,25179,25289,26817,26418,26710,26141,26104,26556,26515";
   	  busStopNames[2] = "Geroyv Chornobylya";
   	  busStopUrls[2] = "t=3&p=25684,24798,25551,27107,25180,25290,26856,26465,26419,26711,26142,26105,26557,26516"; 
-  	  
+  	  busStopNames[3] = "3 Poli";
+  	  busStopUrls[3] = "t=3&p=25656,27714,24782,25588,25729,24946,27444,25233,25318,26839,26387,25424,26670,26160,26123,26579,26547"; 
+
+  	    	  
   	  for(int i = 0; i < busStopNames.length; i++) {
   	  	  stopCg.append(busStopNames[i], null);
   	  }
@@ -128,7 +131,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  
   	  	  int respCode = conn.getResponseCode();
   	  	  
-  	  	  System.out.println("respCode: " + respCode);
+  	  	  //System.out.println("respCode: " + respCode);
   	  	  
   	  	  if (respCode == conn.HTTP_OK) {
   	  	  	  input = conn.openInputStream();
@@ -155,7 +158,7 @@ public class DozorCity extends MIDlet implements CommandListener {
       }
       
       if (buf.length() > 0) {
-      	  System.out.println("Input length:" + buf.length());
+      	  //System.out.println("Input length:" + buf.length());
       	  return buf.toString();
       }
       
@@ -167,12 +170,12 @@ public class DozorCity extends MIDlet implements CommandListener {
    */
   public void callback(String value) {
   	  flagDataReady = true;
-  	  System.out.println("Returned from thread: " + value);
+  	  //System.out.println("Returned from thread: " + value);
   	  
   	  int idx_a1 = value.indexOf("\"a1\"");
   	  int idx_a2 = value.indexOf("\"a2\"");
   	  int idx_a3 = value.indexOf("\"a3\"");
-  	  System.out.println("a1:" + idx_a1 + " a2:" + idx_a2 + " a3:" + idx_a3);
+  	  //System.out.println("a1:" + idx_a1 + " a2:" + idx_a2 + " a3:" + idx_a3);
 
   	  int a1_begin = value.indexOf('[', idx_a1);
   	  int a1_end = value.indexOf(']', a1_begin);
@@ -180,15 +183,15 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  int a2_end = value.indexOf(']', a2_begin);
   	  int a3_begin = value.indexOf('[', idx_a3);
   	  int a3_end = value.indexOf(']', a3_begin);
-  	  System.out.println("a1:" + value.substring(a1_begin+1, a1_end));
-  	  System.out.println("a2:" + value.substring(a2_begin+1, a2_end));
-  	  System.out.println("a3:" + value.substring(a3_begin+1, a3_end));
+  	  //System.out.println("a1:" + value.substring(a1_begin+1, a1_end));
+  	  //System.out.println("a2:" + value.substring(a2_begin+1, a2_end));
+  	  //System.out.println("a3:" + value.substring(a3_begin+1, a3_end));
 
   	  // Clear information from display
   	  tablo.deleteAll();
   	  
-  	  parseTransport("A", value.substring(a1_begin+1, a1_end));		// Parse bus (a1 array)
   	  parseTransport("T", value.substring(a2_begin+1, a2_end));	    // Parse trolleybus (a2 array)
+  	  parseTransport("A", value.substring(a1_begin+1, a1_end));		// Parse bus (a1 array)
   	  parseTransport("Tv", value.substring(a3_begin+1, a3_end));	// Parse trams (a3 array)
   	  
   	  // TODO: concat all lists and sort by time ASC
@@ -196,9 +199,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  //System.out.println("tablo.size(): " + tablo.size());
   	  
    	  // Set font for each row
-  	  //for (int i=0; i<tablo.size(); i++) {
-	  //	  tablo.setFont(i, this.fnt);
-  	  //}
+  	  for (int i=0; i<tablo.size(); i++) {
+	  	  tablo.setFont(i, this.fnt);
+  	  }
 
   }
   
@@ -225,7 +228,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  String obj = tmp.substring(1, idx);
   	  	  Transport tr = new Transport(obj);
   	  	  //System.out.println("obj:" + obj);
-  	  	  System.out.println("Transport:" + tr.toString());
+  	  	  //System.out.println("Transport:" + tr.toString());
   	  	  
   	  	  // Align route and time
   	  	  String route = tr.name; //trType + tr.rId;
@@ -238,7 +241,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  
   	  	  // Add values to tablo
   	  	  tablo.append(sb.toString(), null);
-  	  	  System.out.println("To tablo: " + sb.toString());
+  	  	  //System.out.println("To tablo: " + sb.toString());
   	  	  cnt++;
   	  	  
   	  	  idx = tmp.indexOf('{', 1);
@@ -276,7 +279,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  sb.append(new String(b));
   	  	  }
   	  	  is.close();
-  	  	  System.out.println(sb);
+  	  	  //System.out.println(sb);
   	  }
   	  catch (IOException e) {
   	  }
