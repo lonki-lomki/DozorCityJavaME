@@ -10,8 +10,8 @@ import javax.microedition.pki.*;
 
 public class DozorCity extends MIDlet implements CommandListener {
 	
-	static final Command UPDATE_CMD = new Command("Update", Command.ITEM, 1);
-    static final Command EXIT_CMD = new Command("Exit", Command.EXIT, 1);
+	static final Command UPDATE_CMD = new Command("Обновить", Command.ITEM, 1);
+    static final Command EXIT_CMD = new Command("Выход", Command.EXIT, 1);
 	
 	private Form mMainForm;
 	Display display;
@@ -38,25 +38,25 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  //	  System.out.println("   key:" + keys.nextElement() + " value:" + routes.get((String)keys.nextElement()));
   	  //}
   	  
-  	  stopCg = new ChoiceGroup("Choose a bus stop", Choice.POPUP);
+  	  stopCg = new ChoiceGroup("Выберите остановку", Choice.POPUP);
   	  mMainForm.append(stopCg);
   	  
   	  busStopNames = new String[7];
   	  busStopUrls = new String[7];
-  	  busStopNames[0] = "MegaCenter";
+  	  busStopNames[0] = "Мегацентр";
   	  busStopUrls[0] = "t=3&p=25681,39791,24795,25548,25997,24942,27476,25177,25285,26815,25461,26416,26708,26139,26102,26554,26513";
-  	  busStopNames[1] = "M.Nebaby";
+  	  busStopNames[1] = "М.Небабы";
   	  busStopUrls[1] = "t=3&p=25683,24797,25550,25999,25179,25289,26817,26418,26710,26141,26104,26556,26515";
-  	  busStopNames[2] = "Geroyv Chornobylya";
-  	  busStopUrls[2] = "t=3&p=25684,24798,25551,27107,25180,25290,26856,26465,26419,26711,26142,26105,26557,26516"; 
-  	  busStopNames[3] = "3 Poli";
-  	  busStopUrls[3] = "t=3&p=25656,39838,24782,25588,25729,24946,27444,25233,25318,26839,25424,26387,26670,26160,26123,26579,26547";
-  	  busStopNames[4] = "Drozda last";
+  	  busStopNames[2] = "Г.Чернобыля";
+  	  busStopUrls[2] = "t=3&p=25684,24798,25551,25180,25290,26856,25268,26465,26419,26711,26142,26105,26557,26516";
+  	  busStopNames[3] = "3 поликлиника";
+  	  busStopUrls[3] = "t=3&p=25656,39838,24782,25588,25729,24946,27444,25233,25318,26839,41114,26387,25424,26670,26160,26123,26579,26547";
+  	  busStopNames[4] = "Дрозда(кон)";
   	  busStopUrls[4] = "t=3&p=25691,25558,26053,26863,26472,26426,26149,26112,26564,26523";
-  	  busStopNames[5] = "Drozda first";
+  	  busStopNames[5] = "Дрозда(нач)";
   	  busStopUrls[5] = "t=3&p=25647,25579,25715,26882,26428,26378,26151,26114,26570,26538";
-  	  busStopNames[6] = "Rynok";
-  	  busStopUrls[6] = "t=3&p=26940,26996,24793,25370,25981,25174,25283,25135,26813,24237,26755,27497,26720,27184,25459,24193,26312,29048,27165,26100,36856";
+  	  busStopNames[6] = "Рынок";
+  	  busStopUrls[6] = "t=3&p=26940,26996,24793,25370,25981,25174,25283,25135,26813,24237,26755,27497,26720,41125,27184,25459,24193,36456,26312,29048,27165,26100";
 
   	    	  
   	  for(int i = 0; i < busStopNames.length; i++) {
@@ -98,7 +98,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  	  if (c == UPDATE_CMD) {
 	  	  	  	  //System.out.println("Update pressed!!!");
 	  	  	  	  // Clear list before update
-	  	  	  	  tablo.deleteAll();
+	  	  	  	  ///////tablo.deleteAll();
   	  	  	  	  updateTransportTablo();
   	  	  	  } else if (c == EXIT_CMD) {
   	  	  	  	  notifyDestroyed();
@@ -112,9 +112,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  
 //  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/test.json"));
 //  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/cgi-bin/proxy.py?t=3&p=25681,27707,24795,25548,25997,24942,27476,25177,25285,26815,26416,25461,26708,26139,26102,26554,26513"));
-  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua/cgi-bin/proxy.py?" + busStopUrls[idx]));
+  	  Thread httpThread = new Thread(new HttpTask(this, "http://paralitix.in.ua:80/cgi-bin/proxy.py?" + busStopUrls[idx]));
   	  
-  	  httpThread.start();
+  	  if(httpThread != null) httpThread.start();
   	  
   	  try {
   	  	  Thread.sleep(500);
@@ -131,6 +131,9 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  
   	  try {
   	  	  conn = (HttpConnection)Connector.open(url);
+  	  	  /////conn = (HttpConnection)Connector.open(url, Connector.READ_WRITE, true);
+  	  	  
+  	  	  if(conn == null) return null;
   	  	  
   	  	  conn.setRequestMethod(HttpConnection.GET);
   	  	  conn.setRequestProperty("User-Agent", "Profile/MIDP-2.0 Confirguration/CLDC-1.1");
@@ -177,6 +180,7 @@ public class DozorCity extends MIDlet implements CommandListener {
    * Callback method to display received information
    */
   public void callback(String value) {
+  	  if(value == null) return;
   	  flagDataReady = true;
   	  //System.out.println("Returned from thread: " + value);
   	  
