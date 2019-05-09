@@ -38,7 +38,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  //	  System.out.println("   key:" + keys.nextElement() + " value:" + routes.get((String)keys.nextElement()));
   	  //}
   	  
-  	  stopCg = new ChoiceGroup("Выберите остановку", Choice.POPUP);
+  	  stopCg = new ChoiceGroup("Остановка", Choice.POPUP);
   	  mMainForm.append(stopCg);
   	  
   	  busStopNames = new String[7];
@@ -63,7 +63,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  	  stopCg.append(busStopNames[i], null);
   	  }
   	  
-  	  tablo = new ChoiceGroup(busStopNames[0]+": Bus Stop Tablo", Choice.EXCLUSIVE);
+  	  tablo = new ChoiceGroup("Табло", Choice.EXCLUSIVE);
   	  tablo.setLayout(Item.LAYOUT_EXPAND);
   	  mMainForm.append(tablo);
   	  
@@ -74,7 +74,7 @@ public class DozorCity extends MIDlet implements CommandListener {
   	  		  	  	  if (obj == stopCg) {
   	  		  	  	  	  int idx = obj.getSelectedIndex();
   	  		  	  	  	  String busStop = busStopNames[idx];
-  	  		  	  	  	  tablo.setLabel(busStop+": Bus Stop Tablo");
+  	  		  	  	  	  /////tablo.setLabel(busStop+": Bus Stop Tablo");
   	  		  	  	  	  tablo.deleteAll();
   	  		  	  	  }
   	  		  	  }
