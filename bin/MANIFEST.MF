@@ -3,6 +3,6 @@ MIDlet-Name: DozorCity
 MIDlet-Permissions: javax.microedition.io.Connector.http,javax.microed
  ition.io.Connector.https,javax.microedition.io.Connector.ssl
 MIDlet-Vendor: DKartashov
-MIDlet-Version: 1.2
+MIDlet-Version: 1.3
 MicroEdition-Configuration: CLDC-1.1
 MicroEdition-Profile: MIDP-2.0
